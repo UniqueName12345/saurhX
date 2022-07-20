@@ -1,0 +1,51 @@
+#!/bin/bash
+# simple aur helper, basic, minimal, no fuss.
+# JaydenDev, MIT, 2022
+if [[ -d /home/$USER/.cache/saurh ]]
+then
+	mkdir /home/$USER/.cache/saurh
+fi
+
+if [[ -z $1 ]]
+then
+	echo "saurh
+---------------
+install, install
+remove, remove"
+exit 1
+fi
+
+if [[ $1 == 'install' ]]
+then
+	# the below 2 lines causes the entire script to fail
+	#command -v git || echo 'git not installed, please install git.' && exit 1
+	#command -v makepkg || echo 'makepkg is not installed, please install makepkg.' && exit 1 
+	if [[ -z $2 ]]
+	then
+		echo 'please provide a second argument (package).'
+		exit 1
+	fi
+	git clone https://aur.archlinux.org/$2 /home/$USER/.cache/saurh/$2
+	cd /home/$USER/.cache/saurh
+	echo 'PKGBUILD Contents'
+	echo ----------------------------------------
+	cat /home/$USER/.cache/saurh/$2/PKGBUILD
+       	echo ----------------------------------------
+	read -p "Would you like to install $2? [y/n] " yn
+	case $yn in
+		y ) echo ok, we will proceed;;
+		n ) exit 1;;
+		* ) echo invalid response;
+			exit 1;;
+	esac
+	makepkg -si
+fi
+
+if [[ $1 == 'uninstall' ]]
+then	command -v pacman >&/dev/null || exit 1
+	if [[ -v $2 ]]
+	then
+		echo 'please provide a second argument (package).'
+	fi
+	sudo pacman -R $2 || echo 'command failed, is the package not installed?'
+fi
