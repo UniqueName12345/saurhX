@@ -6,6 +6,12 @@ then
 	mkdir /home/$USER/.cache/saurh
 fi
 
+if [[ $1 == 'v' ]]
+then
+	echo 'saurh v0.1.0-edge'
+	exit 0
+fi
+
 if [[ -z $1 ]]
 then
 	echo "saurh
