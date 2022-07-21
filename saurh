@@ -54,9 +54,14 @@ then	command -v pacman >&/dev/null || exit 1
 fi
 
 if [[ $1 == 'update' ]]
+	if [[ -v $2 ]]
+	then
+		echo 'update what package?'
+	fi
+	pkg==$2
 	find /home/$USER/.local/share/saurh -mindepth -maxdepth 1 -type d | while read pkg; do
 		cd $pkg
-		git pull # or maybe `git fetch` see https://bbs.archlinux.org/viewtopic.php?pid=2047011#p2047011
+		git pull
 		makepkg -si
 	done
 fi
