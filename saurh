@@ -1,10 +1,7 @@
 #!/bin/bash
 # simple aur helper, basic, minimal, no fuss.
 # JaydenDev, MIT, 2022
-if [[ -d /home/$USER/.cache/saurh ]]
-then
-	mkdir /home/$USER/.cache/saurh
-fi
+mkdir -p /home/$USER/.local/share/saurh
 
 if [[ $1 == 'v' ]]
 then
@@ -32,7 +29,7 @@ then
 		exit 1
 	fi
 	git clone https://aur.archlinux.org/$2 /home/$USER/.cache/saurh/$2
-	cd /home/$USER/.cache/saurh
+	cd /home/$USER/.cache/saurh/$2
 	echo 'PKGBUILD Contents'
 	echo ----------------------------------------
 	cat /home/$USER/.cache/saurh/$2/PKGBUILD
@@ -55,3 +52,12 @@ then	command -v pacman >&/dev/null || exit 1
 	fi
 	sudo pacman -R $2 || echo 'command failed, is the package not installed?'
 fi
+
+if [[ $1 == 'update' ]]
+	find /home/$USER/.local/share/saurh -mindepth -maxdepth 1 -type d | while read pkg; do
+		cd $pkg
+		git pull # or maybe `git fetch` see https://bbs.archlinux.org/viewtopic.php?pid=2047011#p2047011
+		makepkg -si
+	done
+fi
+
