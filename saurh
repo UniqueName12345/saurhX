@@ -41,7 +41,7 @@ then
 		* ) echo invalid response;
 			exit 1;;
 	esac
-	makepkg -si
+	makepkg -si || echo 'There was a problem when installing this package, drop into ~/.local/share/saurh/package and try to makepkg or fix issues yourself.'
 fi
 
 if [[ $1 == 'uninstall' ]]
@@ -58,7 +58,7 @@ then
 	find /home/$USER/.local/share/saurh/ -mindepth 1 -maxdepth 1 -type d | while read pkg; do
 		cd $pkg
 		git pull
-		makepkg -si
+		makepkg -si || echo 'There was a problem when installing this package, drop into ~/.local/share/saurh/package-name and try to makepkg or fix issues yourself.'
 	done
 fi
 
