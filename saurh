@@ -54,12 +54,8 @@ then	command -v pacman >&/dev/null || exit 1
 fi
 
 if [[ $1 == 'update' ]]
-	if [[ -v $2 ]]
-	then
-		echo 'update what package?'
-	fi
-	pkg==$2
-	find /home/$USER/.local/share/saurh -mindepth -maxdepth 1 -type d | while read pkg; do
+then
+	find /home/$USER/.local/share/saurh/ -mindepth 1 -maxdepth 1 -type d | while read pkg; do
 		cd $pkg
 		git pull
 		makepkg -si
