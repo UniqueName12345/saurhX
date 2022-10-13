@@ -1,7 +1,4 @@
-#!/bin/bash
-# simple aur helper, basic, minimal, no fuss.
-# JaydenDev, MIT, 2022
-mkdir -p /home/$USER/.local/share/saurh
+mkdir -p /home/$USER/.local/share/saurh/
 
 if [[ $1 == 'v' ]]
 then
@@ -21,18 +18,18 @@ fi
 if [[ $1 == 'install' ]]
 then
 	# the below 2 lines causes the entire script to fail
-	#command -v git || echo 'git not installed, please install git.' && exit 1
-	#command -v makepkg || echo 'makepkg is not installed, please install makepkg.' && exit 1 
+	command -v git >&/dev/null || echo 'git not installed, please install git.' && exit 1
+	command -v makepkg >&/dev/null || echo 'makepkg is not installed, please install makepkg.' && exit 1 
 	if [[ -z $2 ]]
 	then
 		echo 'please provide a second argument (package).'
 		exit 1
 	fi
-	git clone https://aur.archlinux.org/$2 /home/$USER/.cache/saurh/$2
-	cd /home/$USER/.cache/saurh/$2
+	git clone https://aur.archlinux.org/$2 /home/$USER/.local/share/saurh/$2
+	cd /home/$USER/.local/share/saurh/$2
 	echo 'PKGBUILD Contents'
 	echo ----------------------------------------
-	cat /home/$USER/.cache/saurh/$2/PKGBUILD
+	cat /home/$USER/.local/share/saurh/$2/PKGBUILD
        	echo ----------------------------------------
 	read -p "Would you like to install $2? [y/n] " yn
 	case $yn in
@@ -41,16 +38,23 @@ then
 		* ) echo invalid response;
 			exit 1;;
 	esac
-	makepkg -si || echo 'There was a problem when installing this package, drop into ~/.local/share/saurh/package and try to makepkg or fix issues yourself.'
+	makepkg -si || echo 'There was a problem when installing this package, drop into ~/.local/share/saurh/package-name and try to makepkg or fix issues yourself.'
 fi
 
 if [[ $1 == 'uninstall' ]]
-then	command -v pacman >&/dev/null || exit 1
+then	command -v pacman >&/dev/null || command -v apt >&/dev/null || exit 1
 	if [[ -v $2 ]]
 	then
 		echo 'please provide a second argument (package).'
 	fi
-	sudo pacman -R $2 || echo 'command failed, is the package not installed?'
+	if [[ -v pacman ]]
+	then
+		sudo pacman -R $2 || echo 'command failed, is the package not installed?'
+	fi
+	if [[ -v apt ]]
+	then
+		sudo apt remove $2 || echo 'command failed, is the package not installed?'
+	fi
 fi
 
 if [[ $1 == 'update' ]]
@@ -61,4 +65,3 @@ then
 		makepkg -si || echo 'There was a problem when installing this package, drop into ~/.local/share/saurh/package-name and try to makepkg or fix issues yourself.'
 	done
 fi
-
