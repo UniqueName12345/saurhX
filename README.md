@@ -1,2 +1,2 @@
-# This project is discontinued
-and development will end.
+# saurhX
+A (simple package manager, including) AUR manager
